@@ -1,0 +1,30 @@
+name: Design proposal
+description: Propose a design that may become an ADR
+labels: [design]
+body:
+  - type: input
+    id: title
+    attributes:
+      label: Proposal title
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context and problem
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed design
+    validations:
+      required: true
+  - type: textarea
+    id: tradeoffs
+    attributes:
+      label: Tradeoffs and alternatives
+  - type: textarea
+    id: rollout
+    attributes:
+      label: Rollout plan
