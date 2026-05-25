@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="space_black">#05070D</color>
+    <color name="arc_blue">#3A8DFF</color>
+    <color name="arc_red">#FF4E5E</color>
+    <color name="arc_green">#47D987</color>
+</resources>
