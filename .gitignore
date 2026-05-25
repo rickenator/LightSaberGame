@@ -1,0 +1,89 @@
+# Gitignore — Android + Gradle + IntelliJ/Android Studio + OS noise
+
+# ========================
+# Android / Gradle build outputs
+# ========================
+*.apk
+*.ap_
+*.aab
+
+bin/
+gen/
+out/
+build/
+.gradle/
+local.properties
+
+# ========================
+# Gradle wrapper (generated locally)
+# ========================
+gradle/wrapper/gradle-wrapper.jar
+gradlew
+gradlew.bat
+
+# ========================
+# Android Studio / IntelliJ IDEA
+# ========================
+*.iml
+.idea/
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/gradle.xml
+.idea/assetWizardSettings.xml
+.idea/dictionaries
+.idea/libraries
+.idea/caches
+.idea/modules.xml
+*.iws
+*.ipr
+captures/
+.externalNativeBuild/
+.cxx/
+
+# ========================
+# Signing / secrets
+# ========================
+*.jks
+*.keystore
+keystore.properties
+
+# ========================
+# macOS
+# ========================
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# ========================
+# Windows
+# ========================
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ========================
+# Linux
+# ========================
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+
+# ========================
+# Node / npm (if any tooling scripts added)
+# ========================
+node_modules/
+npm-debug.log*
+
+# ========================
+# Misc
+# ========================
+*.class
+*.log
+*.orig
+*.rej
+*.swp
+*.tmp
+.kotlin/
