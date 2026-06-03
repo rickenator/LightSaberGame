@@ -1,82 +1,104 @@
-package com.aniviza.lightsaber;
+package com.aniviza.lightsword;
 
 import android.content.Context;
-import android.media.AudioAttributes;
+import android.media.AudioManager;
 import android.media.SoundPool;
 import android.util.Log;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class SoundManager {
     private static final String TAG = "SoundManager";
+    private static SoundManager instance;
     
     private SoundPool soundPool;
-    private HashMap<Integer, Integer> soundMap;
+    private Map<Integer, Integer> soundMap;
     private Context context;
+    private boolean isLoaded;
     
-    // Sound IDs
-    public static final int SOUND_THRUST = 1;
-    public static final int SOUND_CLASH = 2;
-    public static final int SOUND_WAVE = 3;
-    public static final int SOUND_HAH = 4;
-    public static final int SOUND_HO = 5;
-    public static final int SOUND_PERRY = 6;
-    public static final int SOUND_DUCK = 7;
-    
-    public SoundManager(Context context) {
+    private SoundManager(Context context) {
         this.context = context;
         this.soundMap = new HashMap<>();
+        this.isLoaded = false;
         
-        // Initialize SoundPool (deprecated but functional for this use case)
+        // Initialize SoundPool
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            AudioAttributes audioAttributes = new AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_GAME)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                    .build();
-            
             soundPool = new SoundPool.Builder()
                     .setMaxStreams(10)
-                    .setAudioAttributes(audioAttributes)
                     .build();
         } else {
-            soundPool = new SoundPool(10, android.media.AudioManager.STREAM_MUSIC, 0);
+            soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
         }
         
-        // Load sounds - in a real app, you would load actual sound files
-        // This is a placeholder for sound loading
-        Log.d(TAG, "SoundManager initialized");
+        // Load sounds
+        loadSounds();
     }
     
-            soundPool.play(soundMap.get(soundId), 1.0f, 1.0f, 1, 0, 1.0f);
+    public static SoundManager getInstance(Context context) {
+        if (instance == null) {
+            instance = new SoundManager(context);
+        }
+        return instance;
+    }
+    
+    public void loadSounds() {
+        // Load different sound effects for sword fighting
+        if (soundPool != null) {
+            // In a real implementation, you would load audio files from the raw resources
+            // For now, we'll just set up the framework
+            
+            Log.d(TAG, "Loading sounds for sword fighting game");
+            isLoaded = true;
         }
     }
     
     public void playThrustSound() {
-        playSound(SOUND_THRUST);
+        // Play thrust sound
+        Log.d(TAG, "Playing thrust sound");
+        // In a real implementation, you would use soundPool.play()
     }
     
     public void playClashSound() {
-        playSound(SOUND_CLASH);
+        // Play clash sound
+        Log.d(TAG, "Playing clash sound");
+        // In a real implementation, you would use soundPool.play()
     }
     
     public void playWaveSound() {
-        playSound(SOUND_WAVE);
+        // Play wave sound
+        Log.d(TAG, "Playing wave sound");
+        // In a real implementation, you would use soundPool.play()
     }
     
-    public void playHahSound() {
-        playSound(SOUND_HAH);
+    public void playBlockSound() {
+        // Play block sound
+        Log.d(TAG, "Playing block sound");
+        // In a real implementation, you would use soundPool.play()
     }
     
-    public void playHoSound() {
-        playSound(SOUND_HO);
+    public void playComboSound() {
+        // Play combo sound
+        Log.d(TAG, "Playing combo sound");
+        // In a real implementation, you would use soundPool.play()
     }
     
-    public void playPerrySound() {
-        playSound(SOUND_PERRY);
+    public void playSpecialSound() {
+        // Play special attack sound
+        Log.d(TAG, "Playing special sound");
+        // In a real implementation, you would use soundPool.play()
     }
     
-    public void playDuckSound() {
-        playSound(SOUND_DUCK);
+    public void playHitSound() {
+        // Play hit sound
+        Log.d(TAG, "Playing hit sound");
+        // In a real implementation, you would use soundPool.play()
+    }
+    
+    public void playDefendSound() {
+        // Play defend sound
+        Log.d(TAG, "Playing defend sound");
+        // In a real implementation, you would use soundPool.play()
     }
     
     public void release() {
@@ -84,5 +106,6 @@ public class SoundManager {
             soundPool.release();
             soundPool = null;
         }
+        instance = null;
     }
 }

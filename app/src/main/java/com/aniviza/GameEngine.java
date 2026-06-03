@@ -10,14 +10,21 @@ public class GameEngine {
     
     private List<SwordDevice> connectedDevices;
     private boolean isGameRunning;
+    private int gameScore;
+    private int roundNumber;
+    private long gameStartTime;
     
     public GameEngine() {
         this.connectedDevices = new ArrayList<>();
         this.isGameRunning = false;
+        this.gameScore = 0;
+        this.roundNumber = 1;
+        this.gameStartTime = System.currentTimeMillis();
     }
     
     public void startGame() {
         isGameRunning = true;
+        gameStartTime = System.currentTimeMillis();
         Log.d(TAG, "Game started");
     }
     
@@ -48,18 +55,94 @@ public class GameEngine {
             Log.d(TAG, "Device " + device.getDeviceId() + " is thrusting");
             // Play thrust sound on all devices
             // SoundManager.getInstance().playThrustSound();
+            handleSwordAction(device, SwordDevice.ACTION_THRUST);
         }
         
         if (device.isClashing()) {
             Log.d(TAG, "Device " + device.getDeviceId() + " is clashing");
             // Play clash sound on all devices
             // SoundManager.getInstance().playClashSound();
+            handleSwordAction(device, SwordDevice.ACTION_PARRY);
         }
         
         if (device.isWaving()) {
             Log.d(TAG, "Device " + device.getDeviceId() + " is waving");
             // Play wave sound on all devices
             // SoundManager.getInstance().playWaveSound();
+            handleSwordAction(device, SwordDevice.ACTION_SLASH);
+        }
+        
+        // Handle blocking
+        if (device.isBlocking()) {
+            Log.d(TAG, "Device " + device.getDeviceId() + " is blocking");
+            handleSwordAction(device, SwordDevice.ACTION_BLOCK);
+        }
+        
+        // Handle attacking
+        if (device.isAttacking()) {
+            Log.d(TAG, "Device " + device.getDeviceId() + " is attacking");
+            handleSwordAction(device, SwordDevice.ACTION_THRUST);
+        }
+        
+        // Handle defending
+        if (device.isDefending()) {
+            Log.d(TAG, "Device " + device.getDeviceId() + " is defending");
+            handleSwordAction(device, SwordDevice.ACTION_BLOCK);
+        }
+    }
+    
+    private void handleSwordAction(SwordDevice device, int actionType) {
+        // Handle different sword fighting actions
+        switch (actionType) {
+            case SwordDevice.ACTION_THRUST:
+                // Handle thrust action
+                device.incrementCombo();
+                gameScore += 10;
+                Log.d(TAG, "Thrust action detected. Score: " + gameScore);
+                break;
+                
+            case SwordDevice.ACTION_SLASH:
+                // Handle slash action
+                device.incrementCombo();
+                gameScore += 8;
+                Log.d(TAG, "Slash action detected. Score: " + gameScore);
+                break;
+                
+            case SwordDevice.ACTION_BLOCK:
+                // Handle block action
+                gameScore += 5;
+                Log.d(TAG, "Block action detected. Score: " + gameScore);
+                break;
+                
+            case SwordDevice.ACTION_PARRY:
+                // Handle parry action
+                gameScore += 15;
+                Log.d(TAG, "Parry action detected. Score: " + gameScore);
+                break;
+                
+            case SwordDevice.ACTION_COMBO:
+                // Handle combo action
+                device.incrementCombo();
+                gameScore += 20;
+                Log.d(TAG, "Combo action detected. Score: " + gameScore);
+                break;
+                
+            case SwordDevice.ACTION_SPECIAL:
+                // Handle special action
+                gameScore += 25;
+                Log.d(TAG, "Special action detected. Score: " + gameScore);
+                break;
+                
+            default:
+                Log.d(TAG, "Unknown action type: " + actionType);
+                break;
+        }
+        
+        // Check for combo completion
+        if (device.getComboCount() >= 3) {
+            Log.d(TAG, "Combo completed! Device " + device.getDeviceId() + " scored extra points");
+            gameScore += 30;
+            device.resetCombo();
         }
     }
     
@@ -77,5 +160,31 @@ public class GameEngine {
     
     public boolean isGameRunning() {
         return isGameRunning;
+    }
+    
+    public int getGameScore() {
+        return gameScore;
+    }
+    
+    public int getRoundNumber() {
+        return roundNumber;
+    }
+    
+    public void incrementRound() {
+        roundNumber++;
+    }
+    
+    public long getGameDuration() {
+        if (isGameRunning) {
+            return System.currentTimeMillis() - gameStartTime;
+        }
+        return 0;
+    }
+    
+    public void resetGame() {
+        this.gameScore = 0;
+        this.roundNumber = 1;
+        this.gameStartTime = System.currentTimeMillis();
+        this.connectedDevices.clear();
     }
 }
