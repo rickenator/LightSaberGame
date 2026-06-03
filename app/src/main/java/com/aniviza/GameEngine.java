@@ -8,7 +8,7 @@ import java.util.List;
 public class GameEngine {
     private static final String TAG = "GameEngine";
     
-    private List<LightSwordDevice> connectedDevices;
+    private List<SwordDevice> connectedDevices;
     private boolean isGameRunning;
     
     public GameEngine() {
@@ -26,23 +26,23 @@ public class GameEngine {
         Log.d(TAG, "Game stopped");
     }
     
-    public void addDevice(LightSwordDevice device) {
+    public void addDevice(SwordDevice device) {
         if (!connectedDevices.contains(device)) {
             connectedDevices.add(device);
             Log.d(TAG, "Added device: " + device.toString());
         }
     }
     
-    public void removeDevice(LightSwordDevice device) {
+    public void removeDevice(SwordDevice device) {
         connectedDevices.remove(device);
         Log.d(TAG, "Removed device: " + device.toString());
     }
     
-    public List<LightSwordDevice> getConnectedDevices() {
+    public List<SwordDevice> getConnectedDevices() {
         return connectedDevices;
     }
     
-    public void processDeviceData(LightSwordDevice device) {
+    public void processDeviceData(SwordDevice device) {
         // Process data from a device and determine actions
         if (device.isThrusting()) {
             Log.d(TAG, "Device " + device.getDeviceId() + " is thrusting");

@@ -16,7 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Set;
 
-public class LightSwordGameActivity extends AppCompatActivity {
+public class SwordGameActivity extends AppCompatActivity {
 
     private Button btnConnect;
     private Button btnStartGame;

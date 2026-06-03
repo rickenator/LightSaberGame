@@ -2,7 +2,7 @@ package com.aniviza.lightsword;
 
 import android.bluetooth.BluetoothDevice;
 
-public class LightSwordDevice {
+public class SwordDevice {
     private BluetoothDevice device;
     private String deviceId;
     private boolean isConnected;
@@ -12,7 +12,7 @@ public class LightSwordDevice {
     private boolean isClashing;
     private boolean isWaving;
     
-    public LightSwordDevice(BluetoothDevice device) {
+    public SwordDevice(BluetoothDevice device) {
         this.device = device;
         this.deviceId = device.getAddress();
         this.gyroData = new float[3];
@@ -79,7 +79,7 @@ public class LightSwordDevice {
     
     @Override
     public String toString() {
-        return "LightSwordDevice{" +
+        return "SwordDevice{" +
                 "deviceName='" + (device != null ? device.getName() : "Unknown") + '\'' +
                 ", deviceId='" + deviceId + '\'' +
                 ", isConnected=" + isConnected +
