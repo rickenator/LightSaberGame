@@ -1,4 +1,7 @@
 <resources>
-    <string name="app_name">Lightsaber Game</string>
-    <string name="title_activity_main">Lightsaber Game</string>
+    <string name="app_name">Light Sword Game</string>
+    <string name="title_activity_main">Light Sword Game</string>
+    <string name="action_settings">Settings</string>
+    <string name="game_title">Light Sword Battle</string>
+    <string name="game_description">Experience the thrill of lightsaber combat with motion detection and sound effects</string>
 </resources>

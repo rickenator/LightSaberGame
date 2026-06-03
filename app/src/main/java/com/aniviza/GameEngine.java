@@ -1,4 +1,4 @@
-package com.aniviza.lightsaber;
+package com.aniviza.lightsword;
 
 import android.util.Log;
 
@@ -8,7 +8,7 @@ import java.util.List;
 public class GameEngine {
     private static final String TAG = "GameEngine";
     
-    private List<LightsaberDevice> connectedDevices;
+    private List<LightSwordDevice> connectedDevices;
     private boolean isGameRunning;
     
     public GameEngine() {
@@ -26,23 +26,23 @@ public class GameEngine {
         Log.d(TAG, "Game stopped");
     }
     
-    public void addDevice(LightsaberDevice device) {
+    public void addDevice(LightSwordDevice device) {
         if (!connectedDevices.contains(device)) {
             connectedDevices.add(device);
             Log.d(TAG, "Added device: " + device.toString());
         }
     }
     
-    public void removeDevice(LightsaberDevice device) {
+    public void removeDevice(LightSwordDevice device) {
         connectedDevices.remove(device);
         Log.d(TAG, "Removed device: " + device.toString());
     }
     
-    public List<LightsaberDevice> getConnectedDevices() {
+    public List<LightSwordDevice> getConnectedDevices() {
         return connectedDevices;
     }
     
-    public void processDeviceData(LightsaberDevice device) {
+    public void processDeviceData(LightSwordDevice device) {
         // Process data from a device and determine actions
         if (device.isThrusting()) {
             Log.d(TAG, "Device " + device.getDeviceId() + " is thrusting");

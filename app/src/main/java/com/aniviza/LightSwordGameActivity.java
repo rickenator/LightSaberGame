@@ -1,4 +1,4 @@
-package com.aniviza.lightsaber;
+package com.aniviza.lightsword;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -16,15 +16,20 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Set;
 
-public class MainActivity extends AppCompatActivity {
+public class LightSwordGameActivity extends AppCompatActivity {
 
     private Button btnConnect;
     private Button btnStartGame;
+    private Button btnStopGame;
+    private Button btnToggleSound;
     private TextView tvStatus;
+    private TextView tvActions;
     private TextView tvDevices;
 
     private BluetoothAdapter bluetoothAdapter;
     private BroadcastReceiver receiver;
+    private GameEngine gameEngine;
+    private SoundManager soundManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,12 +39,22 @@ public class MainActivity extends AppCompatActivity {
         initializeViews();
         setupBluetooth();
         setupClickListeners();
+        setupGameEngine();
+        
+        // Initialize sound manager
+        soundManager = new SoundManager(this);
+        soundManager.loadSounds();
+        
+        tvStatus.setText("Status: Ready to start game");
     }
 
     private void initializeViews() {
         btnConnect = findViewById(R.id.btnConnect);
         btnStartGame = findViewById(R.id.btnStartGame);
+        btnStopGame = findViewById(R.id.btnStopGame);
+        btnToggleSound = findViewById(R.id.btnToggleSound);
         tvStatus = findViewById(R.id.tvStatus);
+        tvActions = findViewById(R.id.tvActions);
         tvDevices = findViewById(R.id.tvDevices);
     }
 
@@ -48,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         
         if (bluetoothAdapter == null) {
             Toast.makeText(this, "Bluetooth not supported", Toast.LENGTH_LONG).show();
-            finish();
+finish();
             return;
         }
 
@@ -85,10 +100,27 @@ public class MainActivity extends AppCompatActivity {
         btnStartGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Start the game logic
-                Toast.makeText(MainActivity.this, "Game starting...", Toast.LENGTH_SHORT).show();
+                startGame();
             }
         });
+
+        btnStopGame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stopGame();
+            }
+        });
+
+        btnToggleSound.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleSoundGeneration();
+            }
+        });
+    }
+
+    private void setupGameEngine() {
+        gameEngine = new GameEngine();
     }
 
     private void discoverDevices() {
@@ -111,11 +143,39 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void startGame() {
+        if (gameEngine != null) {
+            gameEngine.startGame();
+            tvStatus.setText("Status: Game started");
+            tvActions.setText("Game is running - thrust, clash, and wave actions detected");
+            Toast.makeText(this, "Game started", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void stopGame() {
+        if (gameEngine != null) {
+            gameEngine.stopGame();
+            tvStatus.setText("Status: Game stopped");
+            tvActions.setText("Actions will appear here");
+            Toast.makeText(this, "Game stopped", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void toggleSoundGeneration() {
+        // This would toggle between live sound generation and pre-recorded sounds
+        // Implementation depends on actual SoundManager implementation
+        tvStatus.setText("Status: Sound generation toggled");
+        Toast.makeText(this, "Sound generation toggled", Toast.LENGTH_SHORT).show();
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         if (receiver != null) {
             unregisterReceiver(receiver);
+        }
+        if (soundManager != null) {
+            soundManager.release();
         }
     }
 }

@@ -1,8 +1,8 @@
-package com.aniviza.lightsaber;
+package com.aniviza.lightsword;
 
 import android.bluetooth.BluetoothDevice;
 
-public class LightsaberDevice {
+public class LightSwordDevice {
     private BluetoothDevice device;
     private String deviceId;
     private boolean isConnected;
@@ -12,7 +12,7 @@ public class LightsaberDevice {
     private boolean isClashing;
     private boolean isWaving;
     
-    public LightsaberDevice(BluetoothDevice device) {
+    public LightSwordDevice(BluetoothDevice device) {
         this.device = device;
         this.deviceId = device.getAddress();
         this.gyroData = new float[3];
@@ -79,7 +79,7 @@ public class LightsaberDevice {
     
     @Override
     public String toString() {
-        return "LightsaberDevice{" +
+        return "LightSwordDevice{" +
                 "deviceName='" + (device != null ? device.getName() : "Unknown") + '\'' +
                 ", deviceId='" + deviceId + '\'' +
                 ", isConnected=" + isConnected +
