@@ -101,6 +101,18 @@ public class SoundManager {
         // In a real implementation, you would use soundPool.play()
     }
     
+    public void playHumSound() {
+        // Play (or update) the sword hum sound
+        Log.d(TAG, "Playing hum sound");
+        // In a real implementation, you would start/update a looping hum stream
+    }
+
+    public void updateHumIntensity(float intensity) {
+        // Adjust the volume/pitch of the hum loop to match sword activity (0–1)
+        Log.d(TAG, "Hum intensity updated: " + intensity);
+        // In a real implementation, you would call soundPool.setVolume() or similar
+    }
+
     public void release() {
         if (soundPool != null) {
             soundPool.release();

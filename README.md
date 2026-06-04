@@ -108,8 +108,16 @@ MIT License - see LICENSE file for details
 
 - **AI opponents** for single-player mode
 - **Advanced weapons** with different fighting styles
-- **Visual effects** for each sword technique
 - **Cloud-based leaderboards** for competitive play
 - **Augmented reality** support for immersive gameplay
+
+## ✨ Visual Effects
+
+The game includes live combat visual effects rendered via a transparent full-screen overlay (`CombatOverlayView`):
+
+- **Clash flash** – a bright cyan-white screen flash fires on every sword clash. The peak brightness and fade duration scale with `hitStrength`, so heavier hits feel more impactful. Rapid clashes replace the in-flight animation so the screen never "stacks" flashes.
+- **Hum glow** – while a sword is active the screen has a soft blue-cyan edge bloom whose brightness tracks sword velocity (smoothed by a low-pass filter). A gentle sinusoidal breath pulse keeps the glow alive even when the sword is still, making the blade feel like it is humming.
+
+All constants (flash colour, max alpha, fade duration, glow colour, min/max brightness, smoothing factor, pulse period) are defined as named constants in `CombatOverlayView.java` for easy tuning.
 
 > **Experience the future of sword fighting games - where your real sword movements become your in-game actions!**
