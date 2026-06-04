@@ -70,7 +70,7 @@ public class CombatOverlayView extends View {
     private final Paint glowPaint  = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     private float flashAlpha  = 0f;
-    private float humTarget   = 0f;
+    private volatile float humTarget   = 0f;
     private float humSmoothed = 0f;
 
     private ValueAnimator flashAnimator;
@@ -172,7 +172,9 @@ public class CombatOverlayView extends View {
 
     /**
      * Set the desired hum-intensity target driven by sword activity
-     * (0 = idle / no sword, 1 = maximum velocity). Thread-safe.
+     * (0 = idle / no sword, 1 = maximum velocity). Declared {@code volatile}
+     * so writes from any thread are immediately visible to the main-thread reader
+     * in {@link #tickHumGlow()}.
      */
     public void setHumTarget(float intensity) {
         humTarget = Math.max(0f, Math.min(1.0f, intensity));

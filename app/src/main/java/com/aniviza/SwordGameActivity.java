@@ -41,10 +41,17 @@ public class SwordGameActivity extends AppCompatActivity {
      * Recurring runnable: samples sword velocity from connected devices, feeds it as
      * the hum-intensity target, and ticks the glow animation every ~33 ms.
      *
-     * <p>Max meaningful velocity is normalised to ~5.0 units (tweak
+     * <p>Max meaningful velocity is normalized to ~5.0 units (tweak
      * {@code HUM_VELOCITY_SCALE} to suit your sensor range).</p>
      */
     private static final float HUM_VELOCITY_SCALE = 5.0f;
+
+    /**
+     * Flash intensity used when a clash is detected but {@code hitStrength} is zero or
+     * negative (i.e. the device hasn't been calibrated yet). Mid-range so the effect
+     * is noticeable without being overwhelming.
+     */
+    private static final float DEFAULT_CLASH_FLASH_INTENSITY = 0.5f;
 
     private final Runnable humTick = new Runnable() {
         @Override
@@ -55,7 +62,7 @@ public class SwordGameActivity extends AppCompatActivity {
                     float v = device.getSwordVelocity();
                     if (v > maxVelocity) maxVelocity = v;
                 }
-                float humIntensity = Math.min(1.0f, maxVelocity / HUM_VELOCITY_SCALE);
+                float humIntensity = maxVelocity / HUM_VELOCITY_SCALE;
                 combatOverlay.setHumTarget(humIntensity);
                 soundManager.updateHumIntensity(humIntensity);
                 combatOverlay.tickHumGlow();
@@ -163,7 +170,7 @@ finish();
         gameEngine.setVisualEffectListener(hitStrength -> runOnUiThread(() -> {
             if (combatOverlay != null) {
                 // Normalise hitStrength to [0,1]; clamp at 1 for very hard hits.
-                float intensity = (hitStrength > 0f) ? Math.min(1.0f, hitStrength) : 0.5f;
+                float intensity = (hitStrength > 0f) ? Math.min(1.0f, hitStrength) : DEFAULT_CLASH_FLASH_INTENSITY;
                 combatOverlay.triggerFlash(intensity);
             }
         }));
