@@ -7,12 +7,27 @@ import java.util.List;
 
 public class GameEngine {
     private static final String TAG = "GameEngine";
-    
+
+    /**
+     * Callback interface for visual combat effects.
+     * Implementations must dispatch any view operations to the main thread.
+     */
+    public interface VisualEffectListener {
+        /**
+         * Called when a sword clash is detected.
+         *
+         * @param hitStrength raw hit-strength value from {@link SwordDevice#getHitStrength()};
+         *                    0 means no data available, positive values indicate hit intensity.
+         */
+        void onClashFlash(float hitStrength);
+    }
+
     private List<SwordDevice> connectedDevices;
     private boolean isGameRunning;
     private int gameScore;
     private int roundNumber;
     private long gameStartTime;
+    private VisualEffectListener visualEffectListener;
     
     public GameEngine() {
         this.connectedDevices = new ArrayList<>();
@@ -48,7 +63,15 @@ public class GameEngine {
     public List<SwordDevice> getConnectedDevices() {
         return connectedDevices;
     }
-    
+
+    /**
+     * Register a listener to receive visual-effect callbacks (e.g. clash flash).
+     * Pass {@code null} to remove the listener.
+     */
+    public void setVisualEffectListener(VisualEffectListener listener) {
+        this.visualEffectListener = listener;
+    }
+
     public void processDeviceData(SwordDevice device) {
         // Process data from a device and determine actions
         if (device.isThrusting()) {
@@ -60,6 +83,10 @@ public class GameEngine {
         
         if (device.isClashing()) {
             Log.d(TAG, "Device " + device.getDeviceId() + " is clashing");
+            // Notify visual-effect listener so the UI can flash the screen.
+            if (visualEffectListener != null) {
+                visualEffectListener.onClashFlash(device.getHitStrength());
+            }
             // Play clash sound on all devices
             // SoundManager.getInstance().playClashSound();
             handleSwordAction(device, SwordDevice.ACTION_PARRY);

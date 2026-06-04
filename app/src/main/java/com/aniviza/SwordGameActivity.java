@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -25,11 +27,42 @@ public class SwordGameActivity extends AppCompatActivity {
     private TextView tvStatus;
     private TextView tvActions;
     private TextView tvDevices;
+    private CombatOverlayView combatOverlay;
 
     private BluetoothAdapter bluetoothAdapter;
     private BroadcastReceiver receiver;
     private GameEngine gameEngine;
     private SoundManager soundManager;
+
+    /** Handler used to drive the hum glow at ~30 fps on the main thread. */
+    private final Handler humHandler = new Handler(Looper.getMainLooper());
+
+    /**
+     * Recurring runnable: samples sword velocity from connected devices, feeds it as
+     * the hum-intensity target, and ticks the glow animation every ~33 ms.
+     *
+     * <p>Max meaningful velocity is normalised to ~5.0 units (tweak
+     * {@code HUM_VELOCITY_SCALE} to suit your sensor range).</p>
+     */
+    private static final float HUM_VELOCITY_SCALE = 5.0f;
+
+    private final Runnable humTick = new Runnable() {
+        @Override
+        public void run() {
+            if (gameEngine != null && combatOverlay != null) {
+                float maxVelocity = 0f;
+                for (SwordDevice device : gameEngine.getConnectedDevices()) {
+                    float v = device.getSwordVelocity();
+                    if (v > maxVelocity) maxVelocity = v;
+                }
+                float humIntensity = Math.min(1.0f, maxVelocity / HUM_VELOCITY_SCALE);
+                combatOverlay.setHumTarget(humIntensity);
+                soundManager.updateHumIntensity(humIntensity);
+                combatOverlay.tickHumGlow();
+            }
+            humHandler.postDelayed(this, 33); // ~30 fps
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,12 +73,15 @@ public class SwordGameActivity extends AppCompatActivity {
         setupBluetooth();
         setupClickListeners();
         setupGameEngine();
-        
-        // Initialize sound manager
-        soundManager = new SoundManager(this);
+
+        // Use singleton accessor — SoundManager's constructor is private.
+        soundManager = SoundManager.getInstance(this);
         soundManager.loadSounds();
-        
+
         tvStatus.setText("Status: Ready to start game");
+
+        // Start the hum glow update loop.
+        humHandler.post(humTick);
     }
 
     private void initializeViews() {
@@ -56,6 +92,7 @@ public class SwordGameActivity extends AppCompatActivity {
         tvStatus = findViewById(R.id.tvStatus);
         tvActions = findViewById(R.id.tvActions);
         tvDevices = findViewById(R.id.tvDevices);
+        combatOverlay = findViewById(R.id.combatOverlay);
     }
 
     private void setupBluetooth() {
@@ -121,6 +158,15 @@ finish();
 
     private void setupGameEngine() {
         gameEngine = new GameEngine();
+        // Wire the clash flash: listener may be called from a non-UI thread, so
+        // dispatch view updates to the main thread via runOnUiThread.
+        gameEngine.setVisualEffectListener(hitStrength -> runOnUiThread(() -> {
+            if (combatOverlay != null) {
+                // Normalise hitStrength to [0,1]; clamp at 1 for very hard hits.
+                float intensity = (hitStrength > 0f) ? Math.min(1.0f, hitStrength) : 0.5f;
+                combatOverlay.triggerFlash(intensity);
+            }
+        }));
     }
 
     private void discoverDevices() {
@@ -171,6 +217,7 @@ finish();
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        humHandler.removeCallbacks(humTick);
         if (receiver != null) {
             unregisterReceiver(receiver);
         }
